@@ -14,8 +14,10 @@
     return window.OJHI18n ? window.OJHI18n.t(key) : key;
   }
 
-  function isHomepage() {
-    return /^\/d\/[^/]+\/?$/.test(location.pathname);
+  // Top-level pages where the button should appear: homepage, problem set,
+  // contest list, record list.
+  function isTopLevelPage() {
+    return window.OJHContestUtil.isTopLevelPath(location.pathname);
   }
 
   function originBase() {
@@ -33,7 +35,9 @@
       .catch(function () { return null; });
   }
 
-  // Soonest-ending ongoing contest -> its first non-AC problem.
+  // Walk ongoing contests from the soonest-ending one; return the first
+  // contest's first non-AC problem. Only when no ongoing contest has an
+  // unsolved problem do we return null (the button then greys out).
   function computeTarget() {
     var base = originBase();
     return fetchDoc(base + '/contest').then(function (contestDoc) {
@@ -42,19 +46,28 @@
       var ongoing = window.OJHContestUtil.pickOngoingAll(
         window.OJHContestUtil.parseContestItems(contestDoc), now);
       if (!ongoing.length) return null;
-      var contest = ongoing[0];
 
-      var problemsUrl = base + '/contest/' + contest.url.replace(/\/$/, '').split('/').pop() + '/problems';
-      return fetchDoc(problemsUrl).then(function (probDoc) {
-        if (!probDoc) return null;
-        var problem = window.OJHContestUtil.firstUnsolvedProblem(probDoc);
-        if (!problem) return null;
-        return { href: problem.href, label: problem.label, name: contest.name };
-      });
+      var limit = Math.min(ongoing.length, 5);
+
+      function step(i) {
+        if (i >= limit) return Promise.resolve(null);
+        var contest = ongoing[i];
+        var tid = contest.url.replace(/\/$/, '').split('/').pop();
+        var problemsUrl = base + '/contest/' + tid + '/problems';
+        return fetchDoc(problemsUrl).then(function (probDoc) {
+          var problem = probDoc ? window.OJHContestUtil.firstUnsolvedProblem(probDoc) : null;
+          if (problem) {
+            return { href: problem.href, label: problem.label, name: contest.name };
+          }
+          return step(i + 1);
+        });
+      }
+
+      return step(0);
     });
   }
 
-  // ------------------------------------------------------- homepage button
+  // ------------------------------------------------------- top-level button
 
   var button = null;
 
@@ -130,8 +143,8 @@
     });
   }
 
-  function ensureHomepageButton() {
-    if (!isHomepage() || !settings || !settings.common || !settings.common.showContinueButton) {
+  function ensureButton() {
+    if (!isTopLevelPage() || !settings || !settings.common || !settings.common.showContinueButton) {
       removeButton();
       return;
     }
@@ -151,22 +164,22 @@
     if (window.OJHSettings) {
       window.OJHSettings.get(function (s) {
         settings = s;
-        ensureHomepageButton();
+        ensureButton();
       });
       try {
         chrome.storage.onChanged.addListener(function (changes, area) {
           if (area !== 'sync') return;
           window.OJHSettings.get(function (s) {
             settings = s;
-            ensureHomepageButton();
+            ensureButton();
           });
         });
       } catch (e) { /* ignore */ }
     }
 
-    var mo = new MutationObserver(function () { ensureHomepageButton(); });
+    var mo = new MutationObserver(function () { ensureButton(); });
     mo.observe(document.documentElement, { subtree: true, childList: true });
-    setInterval(ensureHomepageButton, 2500);
+    setInterval(ensureButton, 2500);
   }
 
   if (document.readyState === 'loading') {
@@ -175,5 +188,9 @@
     init();
   }
 
-  window.__ojhContinueTest = { buildButton: buildButton, currentHref: currentHref };
+  window.__ojhContinueTest = {
+    buildButton: buildButton,
+    currentHref: currentHref,
+    isTopLevelPage: isTopLevelPage
+  };
 })();

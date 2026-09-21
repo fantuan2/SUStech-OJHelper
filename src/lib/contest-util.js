@@ -64,11 +64,28 @@
     return out;
   }
 
+  // Pick the contest problem-list table, ignoring the submissions table that
+  // also renders a `td.col--problem-name` column (it has `col--submit-by`).
+  function pickProblemTable(doc) {
+    if (!doc || !doc.querySelectorAll) return null;
+    var tables = doc.querySelectorAll('table');
+    for (var i = 0; i < tables.length; i++) {
+      var t = tables[i];
+      if (!t.querySelector) continue;
+      if (t.querySelector('td.col--problem-name') && !t.querySelector('td.col--submit-by')) {
+        return t;
+      }
+    }
+    return null;
+  }
+
   // From a contest problem-list document, return the first problem the user
   // has not accepted yet: { href, label }. Null when all are accepted.
   function firstUnsolvedProblem(doc) {
     if (!doc || !doc.querySelectorAll) return null;
-    var rows = doc.querySelectorAll('tr');
+    var table = pickProblemTable(doc);
+    if (!table) return null;
+    var rows = table.querySelectorAll('tbody tr');
     for (var i = 0; i < rows.length; i++) {
       var row = rows[i];
       if (!row.querySelector || !row.querySelector('td.col--problem-name')) continue;
@@ -83,8 +100,10 @@
       }
       if (!link) continue;
 
+      // Hydro marks accepted rows with the "pass" status class (see
+      // STATUS_CODES); "fail"/"progress"/"pending"/"ignored" are not accepted.
       var status = row.querySelector('td.col--status');
-      if (status && /\baccepted\b/.test(status.className || '')) continue;
+      if (status && /\b(pass|accepted)\b/.test(status.className || '')) continue;
 
       var b = row.querySelector('td.col--problem-name b');
       return {
@@ -161,6 +180,17 @@
     return { solved: parseInt(m[1], 10), timeText: m[2] };
   }
 
+  // ------------------------------------------------------------ top-level
+
+  // Top-level pages (homepage / problem set / contest list / record list).
+  function isTopLevelPath(pathname) {
+    var p = String(pathname || '');
+    return /^\/d\/[^/]+\/?$/.test(p) ||
+      /^\/d\/[^/]+\/p\/?$/.test(p) ||
+      /^\/d\/[^/]+\/contest\/?$/.test(p) ||
+      /^\/d\/[^/]+\/record\/?$/.test(p);
+  }
+
   // ------------------------------------------------------------ navigation
 
   // list: [{href, id, ac, active}] in display order, currentHref locates the
@@ -195,6 +225,7 @@
     parseScoreboardHeader: parseScoreboardHeader,
     parseScoreboardCell: parseScoreboardCell,
     parseScoreboardSolved: parseScoreboardSolved,
+    isTopLevelPath: isTopLevelPath,
     pickPrevNext: pickPrevNext
   };
 })(typeof globalThis !== 'undefined' ? globalThis : this);

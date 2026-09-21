@@ -78,6 +78,24 @@ test('pickOngoingAll: empty when nothing is live', () => {
   assert.deepStrictEqual(U.pickOngoingAll(null, 1000), []);
 });
 
+test('isTopLevelPath: homepage / problems / contest / record', () => {
+  assert.strictEqual(U.isTopLevelPath('/d/CS203/'), true);
+  assert.strictEqual(U.isTopLevelPath('/d/CS203'), true);
+  assert.strictEqual(U.isTopLevelPath('/d/CS203/p'), true);
+  assert.strictEqual(U.isTopLevelPath('/d/CS203/p/'), true);
+  assert.strictEqual(U.isTopLevelPath('/d/CS203/contest'), true);
+  assert.strictEqual(U.isTopLevelPath('/d/CS203/record'), true);
+  assert.strictEqual(U.isTopLevelPath('/d/CS203/record/'), true);
+});
+
+test('isTopLevelPath: sub-pages and other paths are excluded', () => {
+  assert.strictEqual(U.isTopLevelPath('/d/CS203/p/123'), false);
+  assert.strictEqual(U.isTopLevelPath('/d/CS203/contest/abc/scoreboard'), false);
+  assert.strictEqual(U.isTopLevelPath('/d/CS203/record/123'), false);
+  assert.strictEqual(U.isTopLevelPath('/d/CS203/home/settings/preference'), false);
+  assert.strictEqual(U.isTopLevelPath('/'), false);
+});
+
 // ------------------------------------------------------ contest DOM parsing
 
 function fakeEl(tag, opts) {
@@ -107,8 +125,8 @@ test('parseContestItems: reads name/url/start/duration', () => {
   assert.strictEqual(r[0].end, 1000 + 2.5 * 3600);
 });
 
-test('firstUnsolvedProblem: skips accepted rows, returns first pending', () => {
-  const mkRow = (statusClass, label, href) => ({
+function mkRow(statusClass, label, href) {
+  return {
     querySelector: (s) => {
       if (s === 'td.col--problem-name') return {};
       if (s === 'td.col--status') return { className: statusClass };
@@ -117,25 +135,66 @@ test('firstUnsolvedProblem: skips accepted rows, returns first pending', () => {
     },
     querySelectorAll: (s) => (s === 'td.col--problem-name a[href]'
       ? [{ getAttribute: () => href }] : [])
-  });
-  const rows = [mkRow('record-status--border accepted', 'A', '/p/1?tid=t'),
-    mkRow('record-status--border', 'B', '/p/2?tid=t')];
-  const doc = { querySelectorAll: (s) => (s === 'tr' ? rows : []) };
+  };
+}
+
+// A problem-list table (has problem-name, no submit-by).
+function mkProblemTable(rows) {
+  return {
+    querySelector: (s) => (s === 'td.col--problem-name' ? {} : null),
+    querySelectorAll: (s) => (s === 'tbody tr' ? rows : [])
+  };
+}
+
+// A submissions table (has problem-name AND submit-by).
+function mkSubmitTable(rows) {
+  return {
+    querySelector: (s) => (s === 'td.col--problem-name' || s === 'td.col--submit-by' ? {} : null),
+    querySelectorAll: (s) => (s === 'tbody tr' ? rows : [])
+  };
+}
+
+function mkDoc(tables) {
+  return { querySelectorAll: (s) => (s === 'table' ? tables : []) };
+}
+
+test('firstUnsolvedProblem: skips accepted rows, returns first pending', () => {
+  const doc = mkDoc([mkProblemTable([
+    mkRow('record-status--border pass', 'A', '/p/1?tid=t'),
+    mkRow('record-status--border', 'B', '/p/2?tid=t')
+  ])]);
   const r = U.firstUnsolvedProblem(doc);
   assert.strictEqual(r.label, 'B');
   assert.strictEqual(r.href, '/p/2?tid=t');
 });
 
-test('firstUnsolvedProblem: null when all accepted', () => {
-  const row = {
-    querySelector: (s) => {
-      if (s === 'td.col--problem-name') return {};
-      if (s === 'td.col--status') return { className: 'accepted' };
-      return null;
-    },
-    querySelectorAll: () => [{ getAttribute: () => '/p/1?tid=t' }]
-  };
-  const doc = { querySelectorAll: (s) => (s === 'tr' ? [row] : []) };
+test('firstUnsolvedProblem: null when all accepted (pass class)', () => {
+  const doc = mkDoc([mkProblemTable([
+    mkRow('col--status record-status--border  pass', 'A', '/p/1?tid=t')
+  ])]);
+  assert.strictEqual(U.firstUnsolvedProblem(doc), null);
+});
+
+test('firstUnsolvedProblem: fail/progress rows are not treated as AC', () => {
+  const doc = mkDoc([mkProblemTable([
+    mkRow('record-status--border fail', 'A', '/p/A'),
+    mkRow('record-status--border progress', 'B', '/p/B')
+  ])]);
+  assert.strictEqual(U.firstUnsolvedProblem(doc).label, 'A');
+});
+
+test('firstUnsolvedProblem: ignores the submissions table (only problem table)', () => {
+  // Real contest pages render BOTH a problem table and a submissions table;
+  // failed submissions for an accepted problem must NOT be picked up.
+  const problemTable = mkProblemTable([
+    mkRow('col--status record-status--border  pass', 'A', '/p/8?tid=t'),
+    mkRow('col--status record-status--border  pass', 'B', '/p/9?tid=t')
+  ]);
+  const submitTable = mkSubmitTable([
+    mkRow('record-status--border fail', '8', '/p/8?tid=t'),
+    mkRow('record-status--border fail', '9', '/p/9?tid=t')
+  ]);
+  const doc = mkDoc([problemTable, submitTable]);
   assert.strictEqual(U.firstUnsolvedProblem(doc), null);
 });
 
