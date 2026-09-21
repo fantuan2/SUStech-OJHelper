@@ -1,0 +1,119 @@
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font: 14px/1.6 system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+  color: #1f2733;
+  background: #f5f6f8;
+}
+
+.wrap {
+  max-width: 720px;
+  margin: 32px auto;
+  background: #fff;
+  border-radius: 10px;
+  padding: 24px 28px 28px;
+  box-shadow: 0 6px 24px rgba(16, 24, 40, 0.1);
+}
+
+.banner {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  background: #fff1f0;
+  border: 1px solid #ffccc7;
+  border-left: 6px solid #d92d20;
+  border-radius: 8px;
+  padding: 16px 18px;
+  margin-bottom: 18px;
+}
+
+.banner-icon {
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #d92d20;
+  color: #fff;
+  font-weight: 700;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.banner h1 {
+  margin: 0 0 4px;
+  font-size: 18px;
+  color: #a8071a;
+}
+
+.banner p { margin: 0; color: #5c5c5c; font-size: 13px; }
+
+.origin-line { margin: 0 0 16px; font-size: 13px; color: #57606a; }
+.origin-line code {
+  font-family: ui-monospace, Consolas, monospace;
+  background: #f0f1f3;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #0b6bcb;
+  word-break: break-all;
+}
+
+.risks h2 { font-size: 15px; margin: 0 0 8px; }
+.risks ul { margin: 0 0 18px; padding-left: 20px; }
+.risks li { margin: 0 0 6px; color: #333; }
+
+.discourage {
+  background: #fffbe6;
+  border: 1px solid #ffe58f;
+  color: #7a5b00;
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-weight: 600;
+  margin: 0 0 18px;
+}
+
+.check {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 12px 14px;
+  border: 1px solid #e3e6ea;
+  border-radius: 8px;
+  cursor: pointer;
+  user-select: none;
+  margin-bottom: 20px;
+}
+
+.check input { margin-top: 3px; }
+
+.actions { display: flex; gap: 12px; justify-content: flex-end; }
+
+button {
+  font: inherit;
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: 1px solid #d0d7de;
+  cursor: pointer;
+}
+
+button.ghost { background: #f6f8fa; }
+button.ghost:hover { background: #eef1f4; }
+
+button.danger {
+  background: #d92d20;
+  border-color: #d92d20;
+  color: #fff;
+  font-weight: 600;
+}
+
+button.danger:hover { background: #b42318; }
+button.danger:disabled {
+  background: #e6a5a0;
+  border-color: #e6a5a0;
+  cursor: not-allowed;
+}
+
+.hint { margin: 14px 0 0; font-size: 13px; color: #8a5a00; min-height: 20px; }
+.hint.ok { color: #1a7f37; }

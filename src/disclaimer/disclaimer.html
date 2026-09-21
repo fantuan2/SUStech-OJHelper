@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OJHelper</title>
+  <link rel="stylesheet" href="disclaimer.css">
+</head>
+<body>
+  <div class="wrap">
+    <div class="banner">
+      <div class="banner-icon" aria-hidden="true">!</div>
+      <div>
+        <h1 data-i18n="disclaimerHeading"></h1>
+        <p data-i18n="disclaimerIntro"></p>
+      </div>
+    </div>
+
+    <p class="origin-line">站点：<code id="origin"></code></p>
+
+    <section class="risks">
+      <h2 data-i18n="disclaimerRisksTitle"></h2>
+      <ul>
+        <li data-i18n="disclaimer.risk.beta"></li>
+        <li data-i18n="disclaimer.risk.conflict"></li>
+        <li data-i18n="disclaimer.risk.readwrite"></li>
+        <li data-i18n="disclaimer.risk.verdict"></li>
+        <li data-i18n="disclaimer.risk.liability"></li>
+      </ul>
+    </section>
+
+    <p class="discourage" data-i18n="disclaimerDiscourage"></p>
+
+    <label class="check">
+      <input type="checkbox" id="ack">
+      <span data-i18n="disclaimerCheck"></span>
+    </label>
+
+    <div class="actions">
+      <button type="button" id="cancel" class="ghost" data-i18n="disclaimerCancel"></button>
+      <button type="button" id="enable" class="danger" disabled></button>
+    </div>
+
+    <p class="hint" id="hint"></p>
+  </div>
+
+  <script src="../lib/i18n.js"></script>
+  <script src="../lib/registry.js"></script>
+  <script src="disclaimer.js"></script>
+</body>
+</html>

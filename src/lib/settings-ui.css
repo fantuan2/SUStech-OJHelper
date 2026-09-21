@@ -1,0 +1,167 @@
+/* Shared styles for the schema-driven settings UI (options page + in-page panel). */
+
+.ojh-settings {
+  font-size: 14px;
+  color: #1f2733;
+}
+
+.ojh-settings .ojh-sec {
+  border: 1px solid #dde3ea;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  background: #fff;
+}
+
+.ojh-settings .ojh-sec > summary {
+  cursor: pointer;
+  padding: 10px 14px;
+  font-weight: 600;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  user-select: none;
+}
+
+.ojh-settings .ojh-sec > summary::-webkit-details-marker { display: none; }
+
+.ojh-settings .ojh-sec > summary::before {
+  content: '▸';
+  color: #8a9aa8;
+  transition: transform .15s;
+  font-size: 12px;
+}
+
+.ojh-settings .ojh-sec[open] > summary::before { transform: rotate(90deg); }
+
+.ojh-settings .ojh-sec-body {
+  padding: 4px 14px 14px;
+}
+
+.ojh-field { margin: 10px 0; }
+
+.ojh-field-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.ojh-field-input {
+  width: 100%;
+  max-width: 480px;
+  padding: 8px 10px;
+  border: 1px solid #dde3ea;
+  border-radius: 6px;
+  font-family: "Consolas", "Source Code Pro", monospace;
+  font-size: 13px;
+  box-sizing: border-box;
+}
+
+.ojh-field-input:focus {
+  outline: none;
+  border-color: #56758f;
+  box-shadow: 0 0 0 3px rgba(86, 117, 143, .15);
+}
+
+.ojh-field-hint {
+  display: block;
+  color: #6b7785;
+  font-size: 12.5px;
+  margin-top: 5px;
+}
+
+.ojh-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0;
+  cursor: pointer;
+}
+
+.ojh-check input { width: 16px; height: 16px; }
+
+.ojh-sec-note {
+  color: #8a9aa8;
+  font-size: 13px;
+}
+
+.ojh-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.ojh-act {
+  padding: 8px 16px;
+  border: 1px solid #56758f;
+  background: #fff;
+  color: #56758f;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+.ojh-act:hover { background: #eef2f6; }
+
+.ojh-act.primary {
+  background: #56758f;
+  color: #fff;
+}
+
+.ojh-act.primary:hover { background: #45607a; }
+
+.ojh-status {
+  color: #6b7785;
+  font-size: 13px;
+  min-height: 20px;
+}
+
+.ojh-status.ojh-ok { color: #3f9e63; }
+
+.ojh-preview-input,
+.ojh-preview-output {
+  width: 100%;
+  min-height: 110px;
+  padding: 10px;
+  border: 1px solid #dde3ea;
+  border-radius: 6px;
+  font-family: "Consolas", "Source Code Pro", monospace;
+  font-size: 13px;
+  resize: vertical;
+  box-sizing: border-box;
+  margin: 8px 0;
+}
+
+.ojh-preview-input:focus,
+.ojh-preview-output:focus {
+  outline: none;
+  border-color: #56758f;
+  box-shadow: 0 0 0 3px rgba(86, 117, 143, .15);
+}
+
+.ojh-preview-output { background: #f8fafc; }
+
+.ojh-preview-lang {
+  display: block;
+  width: 100%;
+  max-width: 260px;
+  box-sizing: border-box;
+  padding: 7px 10px;
+  border: 1px solid #dde3ea;
+  border-radius: 6px;
+  font-size: 13px;
+  background: #fff;
+  color: inherit;
+  margin: 8px 0;
+}
+
+/* Hydro in-page panel: blend with the surrounding .section */
+.ojh-flavor-hydro .ojh-sec {
+  background: transparent;
+  border-color: rgba(86, 117, 143, .25);
+}
