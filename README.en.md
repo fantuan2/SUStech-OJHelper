@@ -103,4 +103,18 @@ node test/hydro-detect.test.js
 
 ## Disclaimer
 
-Support for non-SUSTech sites is Beta and not fully tested. It may conflict with existing site features, and the rewritten code may not satisfy a site's submission requirements. You bear all consequences of using this extension.
+This extension is a self-use tool and has not been thoroughly tested. It may conflict with a site's existing features, and the rewritten code may not satisfy a site's submission requirements. You bear all consequences of using this extension.
+
+This tool has no direct affiliation with the Southern University of Science and Technology (SUSTech) or any of its departments.
+
+This tool has no direct affiliation with the SVcode Vibe Coding Club.
+
+## License
+
+This project is open-sourced under the MIT License. 希望我能因此读上 MIT（想 peach）
+
+## 私货
+
+悄悄宣传下 SVcode 氛围编程社，这是面向南方科技大学 vibe coding 开发者，以及任何对 vibe coding 感兴趣的同学的社团。
+
+欢迎有好点子的同学的加入，一起学习，试错和创造。
