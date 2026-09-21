@@ -1,6 +1,6 @@
 # OJHelper
 
-面向 [Hydro](https://github.com/hydro-dev/Hydro) OJ 的浏览器扩展（Chrome Manifest V3），提供**代码规范化**与**比赛辅助**功能。
+面向SUSTech OJ ([Hydro](https://github.com/hydro-dev/Hydro)) OJ 的浏览器扩展（Chrome Manifest V3），提供**代码规范化**与**比赛辅助**功能。
 
 其实是被每次都要手动把本地的代码手动修改类名烦到的计算机新生的vibe coding玩具，大家看个乐就好。
 
